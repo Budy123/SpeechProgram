@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="WindowAPI.cpp" />
+    <ClCompile Include="WindowAPIClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

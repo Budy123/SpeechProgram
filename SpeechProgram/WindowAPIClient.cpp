@@ -62,7 +62,7 @@ BOOL CALLBACK Dlg_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam) {
 		return 1;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
-		case IDCLOSE:
+		case IDCANCEL:
 			EndDialog(hDlg, 0);
 			break;
 		}
@@ -76,6 +76,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
 	switch (iMsg) {
 	case WM_CREATE:
 		DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hwnd, Dlg_Proc);
+		PostQuitMessage(0);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
