@@ -54,12 +54,32 @@ int recvn(SOCKET s, char* buf, int len, int flags)
 	return (len - left);
 }
 
-DWORD WINAPI ProcessClient(LPVOID arg) {
+DWORD WINAPI ClientMain(LPVOID arg)
+{
+	int retval;
+
+	// 윈속 초기화
+	WSADATA wsa;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+		return 1;
+
+	// socket()
+	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == INVALID_SOCKET) err_quit("socket()");
+
+	// connect()
+	SOCKADDR_IN serveraddr;
+	ZeroMemory(&serveraddr, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
+	serveraddr.sin_port = htons(SERVERPORT);
+	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
+	if (retval == SOCKET_ERROR) err_quit("connect()");
+
+
 	// 데이터 통신에 사용할 변수
 	char buf[BUFSIZE + 1];
 	int len;
-	int retval;
-	SOCKET sock = (SOCKET)arg;
 	// 서버와 데이터 통신
 	while (1) {
 		// 데이터 입력
@@ -96,35 +116,6 @@ DWORD WINAPI ProcessClient(LPVOID arg) {
 		printf("[TCP 클라이언트] %d바이트를 받았습니다.\n", retval);
 		printf("[받은 데이터] %s\n", buf);
 	}
-}
-
-DWORD WINAPI mainProc(LPVOID arg)
-{
-	int retval;
-
-	// 윈속 초기화
-	WSADATA wsa;
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-		return 1;
-
-	// socket()
-	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == INVALID_SOCKET) err_quit("socket()");
-
-	// connect()
-	SOCKADDR_IN serveraddr;
-	ZeroMemory(&serveraddr, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
-	serveraddr.sin_port = htons(SERVERPORT);
-	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
-	if (retval == SOCKET_ERROR) err_quit("connect()");
-
-
-	HANDLE thread;
-
-	thread = CreateThread(NULL, 0, ProcessClient, (LPVOID)sock, 0, NULL);
-	if (!thread) { CloseHandle(thread); }
 	
 	// closesocket()
 	closesocket(sock);
