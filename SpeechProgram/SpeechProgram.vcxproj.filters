@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WindowAPIClient.cpp">
+    <ClCompile Include="WindowAPIGUI.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TCPClient.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
